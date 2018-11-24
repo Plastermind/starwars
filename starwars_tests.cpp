@@ -46,13 +46,13 @@ bool testRebelConstruction(U shield, U speed, U attackPower) {
 }
 
 
-template<typename T, typename U>
+template<typename U, typename T>
 bool checkDamageTake(T &ship, U dmg, U result) {
     ship.takeDamage(dmg);
     return ship.getShield() == result;
 }
 
-template<typename T, typename U>
+template<typename U, typename T>
 bool checkDamageTake(T &&ship, U dmg, U result) {
     ship.takeDamage(dmg);
     return ship.getShield() == result;
@@ -111,15 +111,15 @@ BOOST_AUTO_TEST_SUITE(Rebels);
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::maxSpeed, 12)));
 
 
-        BOOST_CHECK((checkDamageTake(StarCruiser<unsigned>(0, StarCruiserInfo::minSpeed, 12), 100, 0)));
-        BOOST_CHECK((checkDamageTake(StarCruiser<unsigned>(1, StarCruiserInfo::minSpeed, 12), 100, 0)));
-        BOOST_CHECK((checkDamageTake(StarCruiser<unsigned>(100, StarCruiserInfo::minSpeed, 12), 100, 0)));
+        BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(0, StarCruiserInfo::minSpeed, 12), 100, 0)));
+        BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(1, StarCruiserInfo::minSpeed, 12), 100, 0)));
+        BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(100, StarCruiserInfo::minSpeed, 12), 100, 0)));
 
         {
             StarCruiser<unsigned> ship(100, StarCruiserInfo::minSpeed, 42);
-            BOOST_CHECK((checkDamageTake(ship, 8, 92)));
-            BOOST_CHECK((checkDamageTake(ship, 42, 50)));
-            BOOST_CHECK((checkDamageTake(ship, 999999, 0)));
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 8, 92)));
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 42, 50)));
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 999999, 0)));
 
         }
 
@@ -127,6 +127,16 @@ BOOST_AUTO_TEST_SUITE(Rebels);
     }
 
     BOOST_AUTO_TEST_CASE(nonAttackers) {
+        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(77, ExplorerInfo::minSpeed)));
+        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(24, ExplorerInfo::maxSpeed)));
+
+        {
+            Explorer<float> ship(12.34, ExplorerInfo::minSpeed);
+            BOOST_CHECK((checkDamageTake<float>(ship, 0.12, 12.22)));
+            BOOST_CHECK((checkDamageTake<float>(ship, 1.10, 11.12)));
+            BOOST_CHECK((checkDamageTake<float>(ship, 999999.999999, 0.0)));
+        }
+
 
     }
 
@@ -142,7 +152,6 @@ BOOST_AUTO_TEST_SUITE(Empire);
 BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Battle);
-
 
 
 BOOST_AUTO_TEST_SUITE_END();
