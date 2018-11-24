@@ -4,12 +4,12 @@
 
 #ifndef ZAD4_REBELFLEET_H
 #define ZAD4_REBELFLEET_H
+
 #include <assert.h>
 
 template<typename U, typename ...args>
 class RebelStarship {
 };
-
 
 
 template<typename U>
@@ -35,6 +35,7 @@ public:
 
     typedef U valueType;
 
+
 private:
     U shield;
     U speed;
@@ -42,7 +43,7 @@ private:
 };
 
 /* todo czy chodzi o coś w stylu tego czy można dziedziczyć */
-template <typename T> using XXX = RebelStarship<T>;
+template<typename T> using XXX = RebelStarship<T>;
 
 
 template<typename U>
@@ -51,9 +52,9 @@ public:
     Explorer(U shield, U speed) : RebelStarship<U>(shield, speed) {
         assert(299796 <= speed && speed <= 2997960);    //todo
     }
+
 private:
 };
-
 
 
 template<typename U>
@@ -66,10 +67,9 @@ public:
     U getAttackPower() {
         return attackPower;
     }
+
 private:
     U attackPower;
 };
-
-
 
 #endif //ZAD4_REBELFLEET_H
