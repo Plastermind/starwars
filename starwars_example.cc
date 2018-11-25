@@ -11,13 +11,13 @@ int main() {
     TIEFighter<unsigned> fighter(50, 9);
     ImperialDestroyer<int> destroyer(150, 20);
     auto battle = SpaceBattle<short, 1, 23,
-                              DeathStar<long>,
-                              Explorer<int>,
-                              TIEFighter<unsigned>,
-                              XWing<float>>(deathStar,
-                                            explorer,
-                                            fighter,
-                                            xwing);
+            DeathStar<long>,
+            Explorer<int>,
+            TIEFighter<unsigned>,
+            XWing<float>>(deathStar,
+                          explorer,
+                          fighter,
+                          xwing);
 
     assert(battle.countRebelFleet() == 2);
     assert(battle.countImperialFleet() == 2);

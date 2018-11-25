@@ -74,9 +74,9 @@ Klasa SpaceBattle przyjmuje w konstruktorze kolejno obiekty reprezentujące
 statki biorące udział w bitwie.
 
 Klasa SpaceBattle udostępnia metody publiczne:
-size_t countImperialFleet() – zwraca liczbę niezniszczonych statków Imperium;
-size_t countRebelFleet() - zwraca liczbę niezniszczonych statków Rebelii;
-void tick(T timeStep) – na początku sprawdza aktualny czas; jeśli jest to
+    size_t countImperialFleet() – zwraca liczbę niezniszczonych statków Imperium;
+    size_t countRebelFleet() - zwraca liczbę niezniszczonych statków Rebelii;
+    void tick(T timeStep) – na początku sprawdza aktualny czas; jeśli jest to
 czas ataku, to następuje atak statków Imperium na statki Rebelii; na koniec czas
 przesuwa się o timeStep.
 
