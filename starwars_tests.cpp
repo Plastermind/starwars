@@ -12,6 +12,7 @@
 #include <cassert>
 
 
+
 struct StarCruiserInfo {
     static constexpr int minSpeed = 99999;
     static constexpr int maxSpeed = 299795;

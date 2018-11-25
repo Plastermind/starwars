@@ -66,6 +66,7 @@ public:
 private:
 };
 
+
 // funkcja attack powinna zachowywać się inaczej dla drugiego argumentu będącego xwingiem albo starcruiserem
 // stawiam, że trzeba użyć specjalizacji, ale niestety nie wiem jak to zrobić dla "zbioru typów", a nie konkretnego typu
 

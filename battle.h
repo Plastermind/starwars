@@ -12,6 +12,7 @@
 // nieudolne próby zrobienia battle.h :/
 
 
+
 //template <typename T>
 //class mypair {
 //    T values [2];
