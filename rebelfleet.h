@@ -39,7 +39,6 @@ public:
 private:
     U shield;
     U speed;
-
 };
 
 /* todo czy chodzi o coś w stylu tego czy można dziedziczyć */
@@ -54,6 +53,21 @@ public:
     }
 
 private:
+};
+
+template<typename U>
+class XWing : public RebelStarship<U> {
+public:
+    XWing(U shield, U speed, U attackPower) : RebelStarship<U>(shield, speed), attackPower(attackPower) {
+        assert(299796 <= speed && speed <= 2997960);    //todo
+    }
+
+    U getAttackPower() {
+        return attackPower;
+    }
+
+private:
+    U attackPower;
 };
 
 
