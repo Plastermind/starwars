@@ -154,5 +154,11 @@ BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Battle);
 
+    BOOST_AUTO_TEST_CASE(solo) {
+        XWing<float> xwing(42, XWingInfo::minSpeed, 2);
+        DeathStar<float> ds(42, 2);
 
+        attack(ds, xwing);
+
+    }
 BOOST_AUTO_TEST_SUITE_END();

@@ -114,4 +114,27 @@ void attack<DeathStar<int>, XWing<int>> (DeathStar<int>& imperialShip, XWing<int
 }
 
 */
+
+template<typename I, typename R>
+void attack(I& imperialShip, R& rebelShip) {
+    std::cout << "normal attack" << std::endl;
+    rebelShip.takeDamage(imperialShip.getAttackPower());
+}
+
+template<typename I, typename R>
+void attack(I& imperialShip, XWing<R> &xwing) {
+    xwing.takeDamage(imperialShip.getAttackPower());
+    imperialShip.takeDamage(xwing.getAttackPower());
+}
+
+
+
+/*
+template <>
+void attack<DeathStar<int>, XWing<int>> (DeathStar<int>& imperialShip, XWing<int>& xwing) {
+    std::cout << "special attack" << std::endl;
+    xwing.takeDamage(imperialShip.getAttackPower());
+    imperialShip.takeDamage(xwing.getAttackPower());
+}*/
+
 #endif //ZAD4_IMPERIALFLEET_H
