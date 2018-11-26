@@ -7,7 +7,37 @@
 
 #include <iostream>
 #include "rebelfleet.h"
+template <typename U>
+class ImperialStarship {
+public:
+    ImperialStarship(U shield, U attackPower) : shield(shield), attackPower(attackPower) {}
 
+    U getShield() {
+        return this->shield;
+    }
+
+    void takeDamage(U damage) {
+        if (damage > this->getShield()) {
+            this->shield = 0;
+        } else {
+            this->shield -= damage;
+        }
+    }
+
+private:
+    U shield;
+    U attackPower;
+};
+
+template<typename U>
+using DeathStar = ImperialStarship<U>;
+
+template<typename U>
+using ImperialDestroyer = ImperialStarship<U>;
+template<typename U>
+using TIEFighter = ImperialStarship<U>;
+
+/*
 template<typename U, typename ...args>
 class ImperialStarship {
 };
@@ -83,5 +113,5 @@ void attack<DeathStar<int>, XWing<int>> (DeathStar<int>& imperialShip, XWing<int
     imperialShip.takeDamage(xwing.getAttackPower());
 }
 
-
+*/
 #endif //ZAD4_IMPERIALFLEET_H

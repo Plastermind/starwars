@@ -5,17 +5,26 @@
 #ifndef ZAD4_REBELFLEET_H
 #define ZAD4_REBELFLEET_H
 
-#include <assert.h>
+#include <cassert>
+#include <type_traits>
 
-template<typename U, typename ...args>
+
+//sfinae
+//enable_t
+//do space batle krotka bo nie moge typow w runtime rozpoznac
+
+template<typename U, bool isAttacker, int minSpeed, int maxSpeed>
 class RebelStarship {
-};
-
-
-template<typename U>
-class RebelStarship<U> {
 public:
-    RebelStarship(U shield, U speed) : shield(shield), speed(speed) {}
+    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    RebelStarship(std::enable_if_t<isAttacker, T> shield, U speed, U attackPower) : shield(shield), speed(speed), attackPower(attackPower) {
+
+    }
+
+    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed >
+    RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed) {
+
+    }
 
     U getShield() {
         return this->shield;
@@ -33,58 +42,31 @@ public:
         }
     }
 
-    typedef U valueType;
+    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    std::enable_if_t<isAttacker, T> getAttackPower() {
+        return this->attackPower;
+    }
 
+    typedef U valueType;
 
 private:
     U shield;
     U speed;
-};
-
-/* todo czy chodzi o coś w stylu tego czy można dziedziczyć */
-template<typename T> using XXX = RebelStarship<T>;
-
-
-template<typename U>
-class Explorer : public RebelStarship<U> {
-public:
-    Explorer(U shield, U speed) : RebelStarship<U>(shield, speed) {
-        assert(299796 <= speed && speed <= 2997960);    //todo
-    }
-
-
-private:
-};
-
-template<typename U>
-class XWing : public RebelStarship<U> {
-public:
-    XWing(U shield, U speed, U attackPower) : RebelStarship<U>(shield, speed), attackPower(attackPower) {
-        assert(299796 <= speed && speed <= 2997960);    //todo
-    }
-
-    U getAttackPower() {
-        return attackPower;
-    }
-
-private:
     U attackPower;
 };
 
 
 template<typename U>
-class StarCruiser : public RebelStarship<U> {
-public:
-    StarCruiser(U shield, U speed, U attackPower) : RebelStarship<U>(shield, speed), attackPower(attackPower) {
-        assert(99999 <= speed && speed <= 299795);  //todo
-    }
+using StarCruiser = RebelStarship<U, true, 99999, 299795>;
 
-    U getAttackPower() {
-        return attackPower;
-    }
+template<typename U>
+using XWing = RebelStarship<U, true, 299796, 2997960>;
 
-private:
-    U attackPower;
-};
+template<typename U>
+using Explorer = RebelStarship<U, false, 299796, 2997960>;
+
+
+
+
 
 #endif //ZAD4_REBELFLEET_H
