@@ -12,11 +12,11 @@ class ImperialStarship {
 public:
     ImperialStarship(U shield, U attackPower) : shield(shield), attackPower(attackPower) {}
 
-    U getShield() {
+    U getShield() const {
         return this->shield;
     }
 
-    U getAttackPower() {
+    U getAttackPower() const {
         return this->attackPower;
     }
 

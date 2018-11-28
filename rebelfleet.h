@@ -26,11 +26,11 @@ public:
 
     }
 
-    U getShield() {
+    U getShield() const {
         return this->shield;
     }
 
-    U getSpeed() {
+    U getSpeed() const {
         return this->speed;
     }
 
