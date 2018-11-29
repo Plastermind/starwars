@@ -22,11 +22,11 @@ public:
         initialFleetCount();
     }
 
-    size_t countImperialFleet() {
+    size_t countImperialFleet() const {
         return empireCount;
     }
 
-    size_t countRebelFleet() {
+    size_t countRebelFleet() const {
         return rebelCount;
     }
 
@@ -85,7 +85,7 @@ private:
 
     std::tuple<Args...> ships;
 
-    bool isAttackTime(T t) {
+    bool isAttackTime(T t) const {
         size_t b = 0;
         size_t e = attackMoments.size();
         size_t m = (b + e) / 2;
@@ -109,7 +109,7 @@ private:
     }
 
     template<typename S>
-    bool shipDestroyed(const S &ship) {
+    static bool shipDestroyed(const S &ship) {
         return ship.getShield() <= static_cast<typename S::valueType >(0);
     }
 
@@ -139,7 +139,7 @@ private:
     }
 
     template<size_t i, typename AttackingShipT, typename ShipT>
-    void iterateRebels(AttackingShipT &enemy, ShipT &ship) {
+    void iterateRebels(AttackingShipT &enemy, const ShipT &ship) {
         //std::cerr << i << "not Rebel" << std::endl;
         (void) ship; //suppress warning
 
@@ -165,7 +165,7 @@ private:
     }
 
     template<size_t i, typename ShipT>
-    void iterateEmpire(ShipT &ship) {
+    void iterateEmpire(const ShipT &ship) {
         //std::cerr << i << "not Empire" << std::endl;
         (void) ship; //suppress warning
 
@@ -180,7 +180,7 @@ private:
     }
 
     template<size_t i, typename ShipT>
-    void initialFleetCount(ImperialStarship<ShipT> ship) {
+    void initialFleetCount(const ImperialStarship<ShipT> &ship) {
         if (!shipDestroyed(ship)) {
             ++empireCount;
         }
@@ -191,7 +191,7 @@ private:
     }
 
     template<size_t i, typename ShipT, bool isAttacker, int minSpeed, int maxSpeed>
-    void initialFleetCount(RebelStarship<ShipT, isAttacker, minSpeed, maxSpeed> ship) {
+    void initialFleetCount(const RebelStarship<ShipT, isAttacker, minSpeed, maxSpeed> &ship) {
         if (!shipDestroyed(ship)) {
             ++rebelCount;
         }

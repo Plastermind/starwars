@@ -58,8 +58,8 @@ private:
     U speed;
     U attackPower;
 
-    void checkSpeed() {
-        assert(minSpeed <= speed && speed <= maxSpeed);
+    void checkSpeed() const {
+        assert(minSpeed <= this->speed && this->speed <= maxSpeed);
     }
 };
 
