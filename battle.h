@@ -84,7 +84,18 @@ public:
         std::cerr << std::endl;
     }
 
+    std::vector<T> debug_get_attack_moments() {
+        std::vector<T> res;
+        for (auto i : attackMoments) {
+            res.emplace_back(i);
+        }
+        return res;
+    }
+
 private:
+    static_assert(t0 <= t1);
+    static_assert(static_cast<T>(0) <= t0);
+
     T actualTime;
     T maxTime;
     size_t empireCount = 0;
