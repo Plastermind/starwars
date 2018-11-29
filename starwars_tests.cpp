@@ -112,14 +112,16 @@ BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Rebels);
 
-    BOOST_AUTO_TEST_CASE(attackers) {
-
-
+    BOOST_AUTO_TEST_CASE(construction) {
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::minSpeed, 12)));
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::maxSpeed, 12)));
         BOOST_CHECK((testRebelConstruction<boost::multiprecision::cpp_int, StarCruiser<boost::multiprecision::cpp_int> >(100, StarCruiserInfo::maxSpeed, 12)));
 
+        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(77, ExplorerInfo::minSpeed)));
+        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(24, ExplorerInfo::maxSpeed)));
+    }
 
+    BOOST_AUTO_TEST_CASE(takeDamage) {
         BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(0, StarCruiserInfo::minSpeed, 12), 100, 0)));
         BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(1, StarCruiserInfo::minSpeed, 12), 100, 0)));
         BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(100, StarCruiserInfo::minSpeed, 12), 100, 0)));
@@ -131,13 +133,6 @@ BOOST_AUTO_TEST_SUITE(Rebels);
             BOOST_CHECK((checkDamageTake<unsigned>(ship, 999999, 0)));
 
         }
-
-
-    }
-
-    BOOST_AUTO_TEST_CASE(nonAttackers) {
-        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(77, ExplorerInfo::minSpeed)));
-        BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(24, ExplorerInfo::maxSpeed)));
 
         {
             Explorer<float> ship(12.34, ExplorerInfo::minSpeed);
@@ -154,11 +149,14 @@ BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Empire);
 
-    BOOST_AUTO_TEST_CASE(all) {
+    BOOST_AUTO_TEST_CASE(construction) {
         BOOST_CHECK((testEmpireConstruction<unsigned, DeathStar<unsigned> >(100, 12)));
         BOOST_CHECK((testEmpireConstruction<double, TIEFighter<double> >(100, 12)));
         BOOST_CHECK((testEmpireConstruction<boost::multiprecision::cpp_int, ImperialDestroyer<boost::multiprecision::cpp_int> >(100, 12)));
 
+    }
+
+    BOOST_AUTO_TEST_CASE(takeDamage) {
 
         BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(0, 12), 100, 0)));
         BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(1, 12), 100, 0)));
@@ -322,6 +320,15 @@ BOOST_AUTO_TEST_SUITE(Battle);
         {
             Explorer<float> exp(42, ExplorerInfo::minSpeed);
             DeathStar<float> ds(42, 2000);
+            attack(ds, exp);
+            /* todo czy tak ma byc */
+            BOOST_CHECK_EQUAL(ds.getShield(), 42);
+            BOOST_CHECK_EQUAL(exp.getShield(), 0);
+        }
+
+        {
+            Explorer<boost::multiprecision::cpp_int> exp(42, ExplorerInfo::minSpeed);
+            DeathStar<boost::multiprecision::cpp_int> ds(42, 2000);
             attack(ds, exp);
             /* todo czy tak ma byc */
             BOOST_CHECK_EQUAL(ds.getShield(), 42);
