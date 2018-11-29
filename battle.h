@@ -84,7 +84,7 @@ public:
         std::cerr << std::endl;
     }
 
-public:
+private:
     T actualTime;
     T maxTime;
     size_t empireCount = 0;
@@ -183,7 +183,7 @@ public:
 
     static constexpr size_t howManySquares() {
         size_t result = 0;
-        for (T i = t0; i * i <= t1; ++i) { //todo change?
+        for (T i = static_cast<T>(0); i * i <= t1; ++i) { //todo change?
             ++result;
         }
 
@@ -194,7 +194,7 @@ public:
     template<size_t numOfSquares, T ...squares>
     static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
         constexpr T offset = static_cast<T>(sizeof...(squares));
-        constexpr T nextSquare = (t0 + offset) * (t0 + offset);
+        constexpr T nextSquare = (offset) * (offset);
         if constexpr (numOfSquares == 0) {
             constexpr size_t size = (sizeof...(squares));
             return std::array<T, size>{squares...};
