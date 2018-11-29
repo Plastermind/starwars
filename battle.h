@@ -141,6 +141,7 @@ private:
     template<size_t i, typename AttackingShipT, typename ShipT>
     void iterateRebels(AttackingShipT &enemy, ShipT &ship) {
         //std::cerr << i << "not Rebel" << std::endl;
+        (void) ship; //suppress warning
 
         if constexpr (i + 1 < sizeof...(Args)) {
             iterateRebels<i + 1>(enemy, std::get<i + 1>(ships));
@@ -166,6 +167,7 @@ private:
     template<size_t i, typename ShipT>
     void iterateEmpire(ShipT &ship) {
         //std::cerr << i << "not Empire" << std::endl;
+        (void) ship; //suppress warning
 
         if constexpr (i + 1 < sizeof...(Args)) {
             iterateEmpire<i + 1>(std::get<i + 1>(ships));
@@ -215,7 +217,7 @@ private:
         constexpr T nextSquare = (offset) * (offset);
         if constexpr (numOfSquares == 0) {
             constexpr size_t size = (sizeof...(squares));
-            return std::array<T, size>{squares...};
+            return std::array<T, size>{{squares...}};
         } else {
             return calcSquares<numOfSquares - 1, squares..., nextSquare>();
         }
