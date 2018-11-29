@@ -6,6 +6,8 @@
 #define ZAD4_IMPERIALFLEET_H
 
 #include "rebelfleet.h"
+//todo co jak tarcze ujemne
+//todo co jak attack power ujemne
 
 template <typename U>
 class ImperialStarship {
@@ -20,6 +22,7 @@ public:
         return this->attackPower;
     }
 
+    //todo co jak damage ujemne
     void takeDamage(U damage) {
         if (damage > this->getShield()) {
             this->shield = static_cast<U>(0);
