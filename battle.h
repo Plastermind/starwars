@@ -46,7 +46,7 @@ public:
                 fight();
             }
 
-            actualTime = (actualTime + timeStep) % (maxTime + 1);
+            actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
 
             //debug_print();
         }
