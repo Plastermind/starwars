@@ -12,6 +12,18 @@
 #include "battle.h"
 #include <cassert>
 
+struct cout_redirect {
+    cout_redirect( std::streambuf * new_buffer )
+            : old( std::cout.rdbuf( new_buffer ) )
+    { }
+
+    ~cout_redirect( ) {
+        std::cout.rdbuf( old );
+    }
+
+private:
+    std::streambuf * old;
+};
 
 struct StarCruiserInfo {
     static constexpr int minSpeed = 99999;
@@ -103,7 +115,20 @@ BOOST_AUTO_TEST_SUITE(ProvidedTests);
         BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
         BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
 
-        battle.tick(1); // Wypisuje "IMPERIUM WON\n".
+        {
+            boost::test_tools::output_test_stream output;
+            cout_redirect redir(output.rdbuf());
+
+            for (int i =0; i < 5; ++i) {
+                battle.tick(1);
+            }
+            BOOST_CHECK( output.is_equal( ("IMPERIUM WON\n"
+                                          "IMPERIUM WON\n"
+                                          "IMPERIUM WON\n"
+                                          "IMPERIUM WON\n"
+                                          "IMPERIUM WON\n") ) );
+        }
+
     }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -266,6 +291,147 @@ BOOST_AUTO_TEST_SUITE(Battle);
         }
 
 
+
+    }
+
+    BOOST_AUTO_TEST_CASE(battles) {
+        {
+            XWing<char32_t> xwing(100, 300000, 50);
+            XWing<float> xwing2(0.0f, 300000.0f, 50.0f);
+            Explorer<int> explorer(150, 400000);
+            Explorer<float> explorer2(0.0, 400000.0);
+            StarCruiser<unsigned> cruiser(123, 100000, 11);
+
+            StarCruiser<unsigned> cruiser2(0, 100000, 11);
+            StarCruiser<float> cruiser3(1234, 100000, 11);
+            DeathStar<long> deathStar(100, 75);
+            TIEFighter<unsigned> fighter(50, 9);
+            TIEFighter<unsigned> fighter2(0, 9);
+            ImperialDestroyer<int> destroyer(150, 20);
+            ImperialDestroyer<int> destroyer2(0, 20);
+
+            auto battle = SpaceBattle<char,
+                    0, 0,
+                    XWing<float>,
+                    TIEFighter<unsigned>,
+                    Explorer<float>,
+                    StarCruiser<unsigned>,
+                    ImperialDestroyer<int>,
+
+
+                    XWing<char32_t>,
+                    Explorer<int>,
+                    StarCruiser<unsigned>,
+                    StarCruiser<float>,
+                    DeathStar<long>,
+                    TIEFighter<unsigned>,
+                    ImperialDestroyer<int>>(
+                    xwing2,
+                    fighter2,
+                    explorer2,
+                    cruiser2,
+                    destroyer2,
+
+                    xwing,
+                    explorer,
+                    cruiser,
+                    cruiser3,
+                    deathStar,
+                    fighter,
+                    destroyer);
+
+
+            BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), 1);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 3);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 4);
+
+            battle.tick(12);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 2);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 3);
+
+            //todo co jak battle.tick(0)
+            battle.tick(1);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 2);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+
+
+            battle.tick(1);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+
+
+            battle.tick(1);
+            battle.tick(1);
+            battle.tick(1);
+            battle.tick(1);
+            battle.tick(1);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+
+            battle.tick(1);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+
+            {
+                boost::test_tools::output_test_stream output;
+                cout_redirect redir(output.rdbuf());
+
+                for (int i =0; i < 5; ++i) {
+                    battle.tick(1);
+                }
+                BOOST_CHECK( (output.is_equal( "REBELLION WON\n"
+                                              "REBELLION WON\n"
+                                              "REBELLION WON\n"
+                                              "REBELLION WON\n"
+                                              "REBELLION WON\n" )) );
+            }
+
+
+
+
+
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+
+
+        }
+
+        {
+            XWing<float> xwing(100.0f, 300000.0f, 150.0f);
+            ImperialDestroyer<int> destroyer(150, 100);
+
+            auto battle = SpaceBattle<short, 0, 5, XWing<float>, ImperialDestroyer<int>>(xwing, destroyer);
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            battle.tick(1);
+
+            {
+                boost::test_tools::output_test_stream output;
+                cout_redirect redir(output.rdbuf());
+
+                for (int i =0; i < 5; ++i) {
+                    battle.tick(1);
+                }
+                BOOST_CHECK( (output.is_equal( "DRAW\n"
+                                              "DRAW\n"
+                                              "DRAW\n"
+                                              "DRAW\n"
+                                              "DRAW\n" )) );
+
+            }
+
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+
+        }
     }
 
     BOOST_AUTO_TEST_CASE(pair) {
