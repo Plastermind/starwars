@@ -46,9 +46,7 @@ public:
                 fight();
             }
 
-            if (maxTime != 0) {
-                actualTime = (actualTime + timeStep) % maxTime;
-            }
+            actualTime = (actualTime + timeStep) % (maxTime + 1);
 
             //debug_print();
         }
