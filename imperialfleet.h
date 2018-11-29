@@ -22,7 +22,7 @@ public:
 
     void takeDamage(U damage) {
         if (damage > this->getShield()) {
-            this->shield = 0;
+            this->shield = static_cast<U>(0);
         } else {
             this->shield -= damage;
         }
