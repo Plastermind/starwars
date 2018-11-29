@@ -18,12 +18,12 @@ class RebelStarship {
 public:
     template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
     RebelStarship(std::enable_if_t<isAttacker, T> shield, U speed, U attackPower) : shield(shield), speed(speed), attackPower(attackPower) {
-
+        checkSpeed();
     }
 
     template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed >
     RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed) {
-
+        checkSpeed();
     }
 
     U getShield() const {
@@ -53,6 +53,10 @@ private:
     U shield;
     U speed;
     U attackPower;
+
+    void checkSpeed() {
+        assert(minSpeed <= speed && speed <= maxSpeed);
+    }
 };
 
 
