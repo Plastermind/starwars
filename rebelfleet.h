@@ -12,6 +12,8 @@
 //sfinae
 //enable_t
 //do space batle krotka bo nie moge typow w runtime rozpoznac
+//todo co jak tarcze ujemne
+//todo co jak attack power ujemne
 
 template<typename U, bool isAttacker, int minSpeed, int maxSpeed>
 class RebelStarship {
@@ -35,16 +37,17 @@ public:
         return this->speed;
     }
 
+    //todo co jak damage ujemne
     void takeDamage(U damage) {
         if (damage > this->getShield()) {
-            this->shield = 0;
+            this->shield = static_cast<U>(0);
         } else {
             this->shield -= damage;
         }
     }
 
     template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
-    std::enable_if_t<isAttacker, T> getAttackPower() {
+    std::enable_if_t<isAttacker, T> getAttackPower() const {
         return this->attackPower;
     }
 
