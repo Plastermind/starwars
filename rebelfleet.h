@@ -16,12 +16,13 @@
 template<typename U, bool isAttacker, int minSpeed, int maxSpeed>
 class RebelStarship {
 public:
-    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
-    RebelStarship(std::enable_if_t<isAttacker, T> shield, U speed, U attackPower) : shield(shield), speed(speed), attackPower(attackPower) {
+    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    RebelStarship(std::enable_if_t<isAttacker, T> shield, U speed, U attackPower) : shield(shield), speed(speed),
+                                                                                    attackPower(attackPower) {
         checkSpeed();
     }
 
-    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed >
+    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
     RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed) {
         checkSpeed();
     }
@@ -42,7 +43,7 @@ public:
         }
     }
 
-    template < typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
     std::enable_if_t<isAttacker, T> getAttackPower() {
         return this->attackPower;
     }
@@ -68,9 +69,6 @@ using XWing = RebelStarship<U, true, 299796, 2997960>;
 
 template<typename U>
 using Explorer = RebelStarship<U, false, 299796, 2997960>;
-
-
-
 
 
 #endif //ZAD4_REBELFLEET_H
