@@ -140,6 +140,7 @@ BOOST_AUTO_TEST_SUITE(Rebels);
     BOOST_AUTO_TEST_CASE(construction) {
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::minSpeed, 12)));
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::maxSpeed, 12)));
+        //todo is this required?
         BOOST_CHECK((testRebelConstruction<boost::multiprecision::cpp_int, StarCruiser<boost::multiprecision::cpp_int> >(100, StarCruiserInfo::maxSpeed, 12)));
 
         BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(77, ExplorerInfo::minSpeed)));
@@ -177,6 +178,7 @@ BOOST_AUTO_TEST_SUITE(Empire);
     BOOST_AUTO_TEST_CASE(construction) {
         BOOST_CHECK((testEmpireConstruction<unsigned, DeathStar<unsigned> >(100, 12)));
         BOOST_CHECK((testEmpireConstruction<double, TIEFighter<double> >(100, 12)));
+        //todo is this required?
         BOOST_CHECK((testEmpireConstruction<boost::multiprecision::cpp_int, ImperialDestroyer<boost::multiprecision::cpp_int> >(100, 12)));
 
     }
@@ -186,6 +188,7 @@ BOOST_AUTO_TEST_SUITE(Empire);
         BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(0, 12), 100, 0)));
         BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(1, 12), 100, 0)));
         BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(100, 12), 9, 91)));
+        //todo is this required?
         BOOST_CHECK((checkDamageTake<boost::multiprecision::cpp_int>(DeathStar<boost::multiprecision::cpp_int>(100, 12), 9, 91)));
 
 
@@ -247,7 +250,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
             TIEFighter<unsigned> fighter(50, 9);
             TIEFighter<unsigned> fighter2(0, 9);
             ImperialDestroyer<int> destroyer(150, 20);
-            ImperialDestroyer<boost::multiprecision::cpp_int> destroyer2(0, 20);
+            ImperialDestroyer<boost::multiprecision::cpp_int> destroyer2(0, 20);//todo is this required?
 
             auto battle = SpaceBattle<int,
                     20, 50,
@@ -255,7 +258,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
                     StarCruiser<unsigned>,
                     StarCruiser<float>,
                     ImperialDestroyer<int>,
-                    ImperialDestroyer<boost::multiprecision::cpp_int>,
+                    ImperialDestroyer<boost::multiprecision::cpp_int>,//todo is this required?
                     DeathStar<long>,
                     Explorer<int>,
                     Explorer<float>,
@@ -493,6 +496,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
         }
 
         {
+            //todo is this required?
             Explorer<boost::multiprecision::cpp_int> exp(42, ExplorerInfo::minSpeed);
             DeathStar<boost::multiprecision::cpp_int> ds(42, 2000);
             attack(ds, exp);
