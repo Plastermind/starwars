@@ -8,9 +8,9 @@
 #include <boost/test/execution_monitor.hpp>
 #include "rebelfleet.h"
 #include "imperialfleet.h"
+#include "battle.h"
 //#include "battle.h"
 #include <cassert>
-
 
 
 struct StarCruiserInfo {
@@ -154,11 +154,95 @@ BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Battle);
 
-    BOOST_AUTO_TEST_CASE(solo) {
-        XWing<float> xwing(42, XWingInfo::minSpeed, 2);
-        DeathStar<float> ds(42, 2);
+    BOOST_AUTO_TEST_CASE(construction) {
+        XWing<float> xwing(100.0f, 300000.0f, 50.0f);
+        Explorer<int> explorer(150, 400000);
+        StarCruiser<unsigned> cruiser(1234, 100000, 11);
+        DeathStar<long> deathStar(10000, 75);
+        TIEFighter<unsigned> fighter(50, 9);
+        ImperialDestroyer<int> destroyer(150, 20);
+        auto battle = SpaceBattle<short,
+                1, 23,
+                DeathStar<long>,
+                Explorer<int>,
+                TIEFighter<unsigned>,
+                XWing<float >>(deathStar,
+                               explorer,
+                               fighter,
+                               xwing);
+        {
+            std::vector<short> res{0, 1, 4, 9, 16};
 
-        attack(ds, xwing);
+            for (int i = 0; i < res.size(); ++i) {
+                BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
+            }
+
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 2);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 2);
+        }
 
     }
+
+    BOOST_AUTO_TEST_CASE(pair) {
+        {
+            XWing<float> xwing(42, XWingInfo::minSpeed, 2);
+            DeathStar<float> ds(42, 3);
+            attack(ds, xwing);
+            BOOST_CHECK_EQUAL(ds.getShield(), 40);
+            BOOST_CHECK_EQUAL(xwing.getShield(), 39);
+        }
+
+        {
+            XWing<float> xwing(42, XWingInfo::minSpeed, 2000);
+            DeathStar<float> ds(42, 2000);
+            attack(ds, xwing);
+            /* todo czy tak ma byc */
+            BOOST_CHECK_EQUAL(ds.getShield(), 0);
+            BOOST_CHECK_EQUAL(xwing.getShield(), 0);
+        }
+
+        {
+            XWing<double> xw(100, XWingInfo::minSpeed, 1);
+            StarCruiser<double> sc(101, StarCruiserInfo::minSpeed, 2);
+            Explorer<double> ex(102, ExplorerInfo::minSpeed);
+
+            DeathStar<float> ds(103, 3);
+            ImperialDestroyer<float> id(104, 4);
+            TIEFighter<float> tf(105, 5);
+
+            attack(ds, xw);
+            attack(ds, sc);
+            attack(ds, ex);
+
+            attack(id, xw);
+            attack(id, sc);
+            attack(id, ex);
+
+            attack(tf, xw);
+            attack(tf, sc);
+            attack(tf, ex);
+
+            BOOST_CHECK_EQUAL(xw.getShield(), 88);
+            BOOST_CHECK_EQUAL(sc.getShield(), 89);
+            BOOST_CHECK_EQUAL(ex.getShield(), 90);
+
+            BOOST_CHECK_EQUAL(ds.getShield(), 100);
+            BOOST_CHECK_EQUAL(id.getShield(), 101);
+            BOOST_CHECK_EQUAL(tf.getShield(), 102);
+        }
+
+
+        {
+            Explorer<float> exp(42, ExplorerInfo::minSpeed);
+            DeathStar<float> ds(42, 2000);
+            attack(ds, exp);
+            /* todo czy tak ma byc */
+            BOOST_CHECK_EQUAL(ds.getShield(), 42);
+            BOOST_CHECK_EQUAL(exp.getShield(), 0);
+        }
+
+
+    }
+
 BOOST_AUTO_TEST_SUITE_END();
