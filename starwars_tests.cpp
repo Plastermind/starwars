@@ -46,6 +46,13 @@ bool testRebelConstruction(U shield, U speed, U attackPower) {
 
 }
 
+template<typename U, typename S>
+bool testEmpireConstruction(U shield, U attackPower) {
+    S ship(shield, attackPower);
+
+    return ship.getShield() == shield
+           && ship.getAttackPower() == attackPower;
+}
 
 template<typename U, typename T>
 bool checkDamageTake(T &ship, U dmg, U result) {
@@ -110,6 +117,7 @@ BOOST_AUTO_TEST_SUITE(Rebels);
 
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::minSpeed, 12)));
         BOOST_CHECK((testRebelConstruction<unsigned, StarCruiser<unsigned> >(100, StarCruiserInfo::maxSpeed, 12)));
+        BOOST_CHECK((testRebelConstruction<boost::multiprecision::cpp_int, StarCruiser<boost::multiprecision::cpp_int> >(100, StarCruiserInfo::maxSpeed, 12)));
 
 
         BOOST_CHECK((checkDamageTake<unsigned>(StarCruiser<unsigned>(0, StarCruiserInfo::minSpeed, 12), 100, 0)));
@@ -147,7 +155,24 @@ BOOST_AUTO_TEST_SUITE_END();
 BOOST_AUTO_TEST_SUITE(Empire);
 
     BOOST_AUTO_TEST_CASE(all) {
+        BOOST_CHECK((testEmpireConstruction<unsigned, DeathStar<unsigned> >(100, 12)));
+        BOOST_CHECK((testEmpireConstruction<double, TIEFighter<double> >(100, 12)));
+        BOOST_CHECK((testEmpireConstruction<boost::multiprecision::cpp_int, ImperialDestroyer<boost::multiprecision::cpp_int> >(100, 12)));
 
+
+        BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(0, 12), 100, 0)));
+        BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(1, 12), 100, 0)));
+        BOOST_CHECK((checkDamageTake<unsigned>(DeathStar<unsigned>(100, 12), 9, 91)));
+        BOOST_CHECK((checkDamageTake<boost::multiprecision::cpp_int>(DeathStar<boost::multiprecision::cpp_int>(100, 12), 9, 91)));
+
+
+        {
+            DeathStar<unsigned> ship(100, 42);
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 8, 92)));
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 42, 50)));
+            BOOST_CHECK((checkDamageTake<unsigned>(ship, 999999, 0)));
+
+        }
     }
 
 BOOST_AUTO_TEST_SUITE_END();
@@ -199,7 +224,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
             TIEFighter<unsigned> fighter(50, 9);
             TIEFighter<unsigned> fighter2(0, 9);
             ImperialDestroyer<int> destroyer(150, 20);
-            ImperialDestroyer<int> destroyer2(0, 20);
+            ImperialDestroyer<boost::multiprecision::cpp_int> destroyer2(0, 20);
 
             auto battle = SpaceBattle<int,
                     20, 50,
@@ -207,7 +232,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
                     StarCruiser<unsigned>,
                     StarCruiser<float>,
                     ImperialDestroyer<int>,
-                    ImperialDestroyer<int>,
+                    ImperialDestroyer<boost::multiprecision::cpp_int>,
                     DeathStar<long>,
                     Explorer<int>,
                     Explorer<float>,
