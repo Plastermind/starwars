@@ -107,7 +107,10 @@ private:
     }
 
     void fight() {
-        iterateEmpire<0>(std::get<0>(ships));
+        if constexpr(sizeof...(Args) != 0) {
+            iterateEmpire<0>(std::get<0>(ships));
+        }
+
     }
 
     template<typename S>
@@ -178,7 +181,9 @@ private:
     }
 
     void initialFleetCount() {
-        initialFleetCount < 0 > (std::get<0>(ships));
+        if constexpr(sizeof...(Args) != 0) {
+            initialFleetCount < 0 > (std::get<0>(ships));
+        }
     }
 
     template<size_t i, typename ShipT>
