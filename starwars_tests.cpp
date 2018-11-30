@@ -312,7 +312,31 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
 
     BOOST_AUTO_TEST_CASE(construction) {
+        {
+            auto battle = SpaceBattle<short, 1, 4>();
+            BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), 3);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
 
+            {
+                boost::test_tools::output_test_stream output;
+                cout_redirect redir(output.rdbuf());
+
+                for (int i =0; i < 5; ++i) {
+                    battle.tick(i);
+                }
+                BOOST_CHECK( (output.is_equal( "DRAW\n"
+                                               "DRAW\n"
+                                               "DRAW\n"
+                                               "DRAW\n"
+                                               "DRAW\n" )) );
+
+            }
+
+            BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), 3);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+        }
 
 
         {
@@ -407,6 +431,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
     }
 
     BOOST_AUTO_TEST_CASE(battles) {
+
         {
             XWing<char32_t> xwing(100, 300000, 50);
             XWing<float> xwing2(0.0f, 300000.0f, 50.0f);
