@@ -64,6 +64,10 @@ public:
         std::cerr << std::endl;
     }
 
+    T debug_get_current_time() {
+        return actualTime;
+    }
+
     std::vector<T> debug_get_attack_moments() {
         std::vector<T> res;
         for (auto i : attackMoments) {
@@ -201,18 +205,21 @@ private:
 
     static constexpr size_t howManySquares() {
         size_t result = 0;
-        for (T i = static_cast<T>(0); i * i <= t1; i += static_cast<T>(1)) { //todo change?
+        //bool overflow = false;
+        for (T i = static_cast<T>(0); /*!overflow &&*/ i * i <= t1; i += static_cast<T>(1)) { //todo change?
             ++result;
+            /*if ((i + 1) * (i + 1) < i * i) {
+                overflow = true;
+            }*/
         }
 
         return result;
     }
 
-
     template<size_t numOfSquares, T ...squares>
     static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
         constexpr T offset = static_cast<T>(sizeof...(squares));
-        constexpr T nextSquare = (offset) * (offset);
+        constexpr T nextSquare = static_cast<T>(offset * offset);
         if constexpr (numOfSquares == 0) {
             constexpr size_t size = (sizeof...(squares));
             return std::array<T, size>{{squares...}};
