@@ -205,7 +205,108 @@ BOOST_AUTO_TEST_SUITE_END();
 
 BOOST_AUTO_TEST_SUITE(Battle);
 
+
     BOOST_AUTO_TEST_CASE(construction) {
+        {
+            XWing<float> xwing(100.0f, 300000.0f, 50.0f);
+            auto battle = SpaceBattle<char, 0, 127, XWing<float>>(xwing);
+
+            std::vector<short> res{0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121};
+
+
+            BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
+
+            for (int i = 0; i < res.size(); ++i) {
+                BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
+            }
+
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+
+            {
+                boost::test_tools::output_test_stream output;
+                cout_redirect redir(output.rdbuf());
+
+                for (int i =0; i < 5; ++i) {
+                    battle.tick(1);
+                }
+                BOOST_CHECK( (output.is_equal( "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n" )) );
+
+            }
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+
+
+        }
+
+        {
+            XWing<float> xwing(100.0f, 300000.0f, 50.0f);
+            auto battle = SpaceBattle<short, 0, std::numeric_limits<short>::max()/2, XWing<float>>(xwing);
+            //std::cerr << std::numeric_limits<int>::max() << std::endl;
+            std::vector<long long> res;
+            for (long long i = 0; i * i < std::numeric_limits<short>::max(); ++i) {
+                res.push_back(i * i);
+            }
+
+            BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
+
+            for (int i = 0; i < res.size(); ++i) {
+                BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
+            }
+
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+
+            {
+                boost::test_tools::output_test_stream output;
+                cout_redirect redir(output.rdbuf());
+
+                for (int i =0; i < 5; ++i) {
+                    battle.tick(1);
+                }
+                BOOST_CHECK( (output.is_equal( "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n"
+                                               "REBELLION WON\n" )) );
+
+            }
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+
+
+        }
+
+        {
+            XWing<float> xwing(10000000000.0f, 300000.0f, 0.0f);
+            TIEFighter<float> TIE(10000000000.0f, 0.0f);
+            auto battle = SpaceBattle<char, 0, std::numeric_limits<char>::max(), XWing<float>, TIEFighter<float>>(xwing, TIE);
+            //std::cerr << std::numeric_limits<int>::max() << std::endl;
+
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
+
+            int t = 0;
+            for (int i = 0; i < 1000; ++i) {
+                int jump = rand();
+                battle.tick(jump);
+                t += jump;
+                t %= std::numeric_limits<char>::max();
+                BOOST_CHECK_EQUAL(battle.debug_get_current_time(), t);
+            }
+
+
+        }
+
+
         {
             XWing<float> xwing(100.0f, 300000.0f, 50.0f);
             Explorer<int> explorer(150, 400000);
