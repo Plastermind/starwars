@@ -145,6 +145,8 @@ BOOST_AUTO_TEST_SUITE(Rebels);
 
         BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(77, ExplorerInfo::minSpeed)));
         BOOST_CHECK((testRebelConstruction<float, Explorer<float> >(24, ExplorerInfo::maxSpeed)));
+        BOOST_CHECK((testRebelConstruction<double, XWing<double> >(77, XWingInfo::minSpeed, 256)));
+        BOOST_CHECK((testRebelConstruction<double, XWing<double> >(24, XWingInfo::maxSpeed, 128)));
     }
 
     BOOST_AUTO_TEST_CASE(takeDamage) {
@@ -215,7 +217,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
             BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
 
-            for (int i = 0; i < res.size(); ++i) {
+            for (size_t i = 0; i < res.size(); ++i) {
                 BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
             }
 
@@ -245,8 +247,8 @@ BOOST_AUTO_TEST_SUITE(Battle);
         }
 
         {
-            XWing<float> xwing(100.0f, 300000.0f, 50.0f);
-            auto battle = SpaceBattle<short, 0, std::numeric_limits<short>::max(), XWing<float>>(xwing);
+            TIEFighter<float> tie(100.0f, 50.0f);
+            auto battle = SpaceBattle<short, 0, std::numeric_limits<short>::max(), TIEFighter<float>>(tie);
             //std::cerr << std::numeric_limits<int>::max() << std::endl;
             std::vector<long long> res;
             for (long long i = 0; i * i < std::numeric_limits<short>::max(); ++i) {
@@ -255,13 +257,13 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
             BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
 
-            for (int i = 0; i < res.size(); ++i) {
+            for (size_t i = 0; i < res.size(); ++i) {
                 BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
             }
 
 
-            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
-            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
 
             {
                 boost::test_tools::output_test_stream output;
@@ -270,16 +272,16 @@ BOOST_AUTO_TEST_SUITE(Battle);
                 for (int i =0; i < 5; ++i) {
                     battle.tick(1);
                 }
-                BOOST_CHECK( (output.is_equal( "REBELLION WON\n"
-                                               "REBELLION WON\n"
-                                               "REBELLION WON\n"
-                                               "REBELLION WON\n"
-                                               "REBELLION WON\n" )) );
+                BOOST_CHECK( (output.is_equal( "IMPERIUM WON\n"
+                                               "IMPERIUM WON\n"
+                                               "IMPERIUM WON\n"
+                                               "IMPERIUM WON\n"
+                                               "IMPERIUM WON\n" )) );
 
             }
 
-            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
-            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+            BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
 
 
         }
@@ -360,7 +362,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
                 BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
 
-                for (int i = 0; i < res.size(); ++i) {
+                for (size_t i = 0; i < res.size(); ++i) {
                     BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
                 }
 
@@ -417,7 +419,7 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
             BOOST_REQUIRE_EQUAL(battle.debug_get_attack_moments().size(), res.size());
 
-            for (int i = 0; i < res.size(); ++i) {
+            for (size_t i = 0; i < res.size(); ++i) {
                 BOOST_CHECK_EQUAL(battle.debug_get_attack_moments()[i], res[i]);
             }
 
@@ -675,6 +677,9 @@ BOOST_AUTO_TEST_SUITE(Battle);
 
             BOOST_CHECK_EQUAL(battle.countImperialFleet(), 0);
             BOOST_CHECK_EQUAL(battle.countRebelFleet(), 0);
+
+            BOOST_CHECK_EQUAL(xwing.getShield(), 100.0f);
+            BOOST_CHECK_EQUAL(destroyer.getShield(), 150);
 
         }
 
