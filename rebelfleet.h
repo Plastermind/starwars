@@ -2,8 +2,8 @@
 // Created by skonrad on 24/11/18.
 //
 
-#ifndef ZAD4_REBELFLEET_H
-#define ZAD4_REBELFLEET_H
+#ifndef STARWARS_REBELFLEET_H
+#define STARWARS_REBELFLEET_H
 
 #include <cassert>
 #include <type_traits>
@@ -74,4 +74,4 @@ template<typename U>
 using Explorer = RebelStarship<U, false, 299796, 2997960>;
 
 
-#endif //ZAD4_REBELFLEET_H
+#endif //STARWARS_REBELFLEET_H

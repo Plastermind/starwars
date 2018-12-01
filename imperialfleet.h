@@ -2,8 +2,8 @@
 // Created by skonrad on 24/11/18.
 //
 
-#ifndef ZAD4_IMPERIALFLEET_H
-#define ZAD4_IMPERIALFLEET_H
+#ifndef STARWARS_IMPERIALFLEET_H
+#define STARWARS_IMPERIALFLEET_H
 
 #include "rebelfleet.h"
 //todo co jak tarcze ujemne
@@ -66,4 +66,4 @@ void attack(I& imperialShip, StarCruiser<T>& starCruiser) {
 }
 
 
-#endif //ZAD4_IMPERIALFLEET_H
+#endif //STARWARS_IMPERIALFLEET_H

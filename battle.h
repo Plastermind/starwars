@@ -128,7 +128,6 @@ private:
             if (shipDestroyed(rebelShip)) {
                 --rebelCount;
             }
-
         }
 
         if (!shipDestroyed(imperialShip)) {
