@@ -45,6 +45,7 @@ public:
             }
 
             actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
+            //overflowSafeIncreaseTime(timeStep);
         }
     }
 
@@ -85,6 +86,40 @@ private:
     size_t rebelCount = 0;
 
     std::tuple<Args...> ships;
+
+    /*static T getOverflow(T value, T increase) {
+        T b = static_cast<T>(0);
+        T e = increase;
+        T m = (e - b) / static_cast<T>(2) + b;
+        while (e - b > static_cast<T>(1)) {
+            bool overflow = value > static_cast<T>(value + m);
+            if (overflow) {
+                e = m - static_cast<T>(1);
+            } else {
+                b = m;
+            }
+            m = (e - b) / static_cast<T>(2) + b;
+        }
+
+        bool overflow = value > static_cast<T>(value + e);
+
+        if (overflow) {
+            return increase - b;
+        } else {
+            return increase - e;
+        }
+    }
+
+    void overflowSafeIncreaseTime(T timeStep) {
+        T newTime = actualTime + timeStep;
+        if (newTime < actualTime) {
+            T overflow = getOverflow(actualTime, timeStep);
+            newTime = (actualTime + (timeStep - overflow)) % (maxTime + static_cast<T>(1));
+            newTime += overflow;
+        }
+
+        actualTime = newTime % (maxTime + static_cast<T>(1));
+    }*/
 
     bool isAttackTime(T t) const {
         size_t b = 0;
