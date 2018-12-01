@@ -258,6 +258,7 @@ private:
     static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
         constexpr T offset = static_cast<T>(sizeof...(squares));
         constexpr T nextSquare = static_cast<T>(offset * offset);
+        (void) nextSquare; //suppress warnings
         if constexpr (numOfSquares == 0) {
             constexpr size_t size = (sizeof...(squares));
             return std::array<T, size>{{squares...}};
