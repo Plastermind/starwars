@@ -31,8 +31,6 @@ public:
     }
 
     void tick(T timeStep) {
-        //todo czy czas moze byc double
-
         if (countImperialFleet() == 0 || countRebelFleet() == 0) {
             if (countImperialFleet() == 0 && countRebelFleet() == 0) {
                 std::cout << "DRAW" << std::endl;
@@ -47,16 +45,15 @@ public:
             }
 
             actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
-
-            //debug_print();
         }
     }
 
-    // helping function, remember to delete
+    // todo delete
     void debug_print() {
         std::cout << actualTime << " " << maxTime << std::endl;
     }
 
+    // todo delete
     void debug_print_attack_moments() {
         for (auto m : attackMoments) {
             std::cerr << m << " ";
@@ -64,10 +61,12 @@ public:
         std::cerr << std::endl;
     }
 
+    // todo delete
     T debug_get_current_time() {
         return actualTime;
     }
 
+    // todo delete
     std::vector<T> debug_get_attack_moments() {
         std::vector<T> res;
         for (auto i : attackMoments) {
@@ -90,7 +89,7 @@ private:
     bool isAttackTime(T t) const {
         size_t b = 0;
         size_t e = attackMoments.size();
-        size_t m = (b + e) / 2;
+        size_t m = (e - b) / 2 + b;
 
         while (b < e) {
             if (attackMoments[m] < t) {
@@ -100,7 +99,7 @@ private:
             } else {
                 return true;
             }
-            m = (b + e) / 2;
+            m = (e - b) / 2 + b;
         }
 
         return false;
@@ -113,28 +112,28 @@ private:
 
     }
 
-    template<typename S>
-    static bool shipDestroyed(const S &ship) {
-        return ship.getShield() <= static_cast<typename S::valueType >(0);
+    template<typename ShipT>
+    static bool shipDestroyed(const ShipT &ship) {
+        return ship.getShield() <= static_cast<typename ShipT::valueType>(0);
     }
 
 
-    template<size_t i, typename AttackingShipT, typename ShipT, bool isAttacker, int minSpeed, int maxSpeed>
-    void iterateRebels(AttackingShipT &enemy, RebelStarship<ShipT, isAttacker, minSpeed, maxSpeed> &ship) {
+    template<size_t i, typename ImperialShipT, typename U, bool isAttacker, int minSpeed, int maxSpeed>
+    void iterateRebels(ImperialShipT &imperialShip, RebelStarship<U, isAttacker, minSpeed, maxSpeed> &rebelShip) {
         //std::cerr << i << "Rebel" << std::endl;
 
-        if (!shipDestroyed(ship)) {
-            attack(enemy, ship);
+        if (!shipDestroyed(rebelShip)) {
+            attack(imperialShip, rebelShip);
 
-            if (shipDestroyed(ship)) {
+            if (shipDestroyed(rebelShip)) {
                 --rebelCount;
             }
 
         }
 
-        if (!shipDestroyed(enemy)) {
+        if (!shipDestroyed(imperialShip)) {
             if constexpr (i + 1 < sizeof...(Args)) {
-                iterateRebels<i + 1>(enemy, std::get<i + 1>(ships));
+                iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
             }
         } else {
             --empireCount;
@@ -143,24 +142,24 @@ private:
 
     }
 
-    template<size_t i, typename AttackingShipT, typename ShipT>
-    void iterateRebels(AttackingShipT &enemy, const ShipT &ship) {
+    template<size_t i, typename ImperialShipT, typename ShipT>
+    void iterateRebels(ImperialShipT &imperialShip, const ShipT &ship) {
         //std::cerr << i << "not Rebel" << std::endl;
         (void) ship; //suppress warning
 
         if constexpr (i + 1 < sizeof...(Args)) {
-            iterateRebels<i + 1>(enemy, std::get<i + 1>(ships));
+            iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
         }
 
     }
 
 
-    template<size_t i, typename ShipT>
-    void iterateEmpire(ImperialStarship<ShipT> &ship) {
+    template<size_t i, typename U>
+    void iterateEmpire(ImperialStarship<U> &imperialShip) {
         //std::cerr << i << "Empire" << std::endl;
 
-        if (!shipDestroyed(ship)) {
-            iterateRebels<0>(ship, std::get<0>(ships));
+        if (!shipDestroyed(imperialShip)) {
+            iterateRebels<0>(imperialShip, std::get<0>(ships));
 
         }
         if constexpr (i + 1 < sizeof...(Args)) {
@@ -186,9 +185,9 @@ private:
         }
     }
 
-    template<size_t i, typename ShipT>
-    void initialFleetCount(const ImperialStarship<ShipT> &ship) {
-        if (!shipDestroyed(ship)) {
+    template<size_t i, typename U>
+    void initialFleetCount(const ImperialStarship<U> &imperialShip) {
+        if (!shipDestroyed(imperialShip)) {
             ++empireCount;
         }
 
@@ -197,9 +196,9 @@ private:
         }
     }
 
-    template<size_t i, typename ShipT, bool isAttacker, int minSpeed, int maxSpeed>
-    void initialFleetCount(const RebelStarship<ShipT, isAttacker, minSpeed, maxSpeed> &ship) {
-        if (!shipDestroyed(ship)) {
+    template<size_t i, typename U, bool isAttacker, int minSpeed, int maxSpeed>
+    void initialFleetCount(const RebelStarship<U, isAttacker, minSpeed, maxSpeed> &rebelShip) {
+        if (!shipDestroyed(rebelShip)) {
             ++rebelCount;
         }
 
