@@ -289,20 +289,20 @@ BOOST_AUTO_TEST_SUITE(Battle);
         {
             XWing<float> xwing(10000000000.0f, 300000.0f, 0.0f);
             TIEFighter<float> TIE(10000000000.0f, 0.0f);
-            auto battle = SpaceBattle<char, 0, std::numeric_limits<char>::max(), XWing<float>, TIEFighter<float>>(xwing, TIE);
+            auto battle = SpaceBattle<char, 0, std::numeric_limits<char>::max() - 1, XWing<float>, TIEFighter<float>>(xwing, TIE);
             //std::cerr << std::numeric_limits<int>::max() << std::endl;
 
             BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
             BOOST_CHECK_EQUAL(battle.countImperialFleet(), 1);
 
             int t = 0;
-            for (int i = 0; i < 1000; ++i) {
-                int jump = rand();
+            for (int i = 0; i < 20; ++i) {
+                int jump = rand() % std::numeric_limits<char>::max();
                 battle.tick(jump);
                 t += jump;
                 t %= std::numeric_limits<char>::max();
                 //todo czy ten oveflow trzeba osblozyc
-               // BOOST_CHECK_EQUAL(battle.debug_get_current_time(), t);
+                BOOST_CHECK_EQUAL(battle.debug_get_current_time(), t);
             }
 
             BOOST_CHECK_EQUAL(battle.countRebelFleet(), 1);
