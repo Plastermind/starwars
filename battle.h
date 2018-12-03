@@ -84,22 +84,12 @@ private:
 
     //stl lower_bound
     bool isAttackTime(T t) const {
-        size_t b = 0;
-        size_t e = attackMoments.size();
-        size_t m = (e - b) / 2 + b;
+        auto attackMoment = std::lower_bound(attackMoments.begin(), attackMoments.end(), t);
 
-        while (b < e) {
-            if (attackMoments[m] < t) {
-                b = m + 1;
-            } else if (attackMoments[m] > t) {
-                e = m;
-            } else {
-                return true;
-            }
-            m = (e - b) / 2 + b;
-        }
-
-        return false;
+        if (attackMoment == attackMoments.end())
+            return false;
+        else
+            return t == *attackMoment;
     }
 
     void fight() {
