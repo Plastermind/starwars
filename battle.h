@@ -82,7 +82,6 @@ private:
 
     std::tuple<Args...> ships;
 
-    //stl lower_bound
     bool isAttackTime(T t) const {
         auto attackMoment = std::lower_bound(attackMoments.begin(), attackMoments.end(), t);
 
