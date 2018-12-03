@@ -1,18 +1,14 @@
-//
-// Created by skonrad on 24/11/18.
-//
-
 #ifndef STARWARS_IMPERIALFLEET_H
 #define STARWARS_IMPERIALFLEET_H
 
 #include "rebelfleet.h"
-//todo co jak tarcze ujemne
-//todo co jak attack power ujemne
 
 template <typename U>
 class ImperialStarship {
 public:
-    ImperialStarship(U shield, U attackPower) : shield(shield), attackPower(attackPower) {}
+    ImperialStarship(U shield, U attackPower) : shield(shield), attackPower(attackPower) {
+        checkParameters();
+    }
 
     U getShield() const {
         return this->shield;
@@ -22,7 +18,6 @@ public:
         return this->attackPower;
     }
 
-    //todo co jak damage ujemne
     void takeDamage(U damage) {
         if (damage > this->getShield()) {
             this->shield = static_cast<U>(0);
@@ -36,6 +31,19 @@ public:
 private:
     U shield;
     U attackPower;
+
+    void checkParameters() const {
+        checkShield();
+        checkAttackPower();
+    }
+
+    void checkShield() const {
+        assert(this->shield >= static_cast<U>(0));
+    }
+
+    void checkAttackPower() const {
+        assert(this->attackPower >= static_cast<U>(0));
+    }
 };
 
 template<typename U>
@@ -44,30 +52,55 @@ using DeathStar = ImperialStarship<U>;
 template<typename U>
 using ImperialDestroyer = ImperialStarship<U>;
 
+
 template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
+template<typename I>
+bool isImperial(ImperialStarship<I>) {
+    return true;
+}
+
+template<typename T>
+bool isImperial(T) {
+    return false;
+}
+
+template<typename R, int minSpeed, int maxSpeed, bool isAttacker>
+bool isRebel(RebelStarship<R, isAttacker, minSpeed, maxSpeed>) {
+    return true;
+}
+
+template<typename T>
+bool isRebel(T) {
+    return false;
+}
 
 template<typename I, typename R>
-void attack(I &imperialShip, R &rebelShip) {
+void checkShipsCorrectness(I imperialShip, R rebelShip) {
+    assert(isImperial(imperialShip) && isRebel(rebelShip));
+}
+
+template<typename I, typename R>
+void attack(I& imperialShip, R& rebelShip) {
+    checkShipsCorrectness(imperialShip, rebelShip);
     attack(imperialShip, rebelShip);
 }
 
-template<typename I, typename U, int minSpeed, int maxSpeed>
-void attack(I& imperialShip, RebelStarship<U, false, minSpeed, maxSpeed>& rebelShip) {
-    bool isImperialShipNotDestroyed = imperialShip.getShield() >= 0;
+template<typename I, typename R, int minSpeed, int maxSpeed>
+void attack(I& imperialShip, RebelStarship<R, false, minSpeed, maxSpeed>& rebelShip) {
+    bool isImperialShipNotDestroyed = imperialShip.getShield() > static_cast<typename I::valueType>(0);
     if (isImperialShipNotDestroyed) {
         rebelShip.takeDamage(imperialShip.getAttackPower());
     }
 
 }
 
-template<typename I, typename U, int minSpeed, int maxSpeed>
-void attack(I& imperialShip, RebelStarship<U, true, minSpeed, maxSpeed>& rebelShip) {
-
-    bool isImperialShipNotDestroyed = imperialShip.getShield() >= 0;
+template<typename I, typename R, int minSpeed, int maxSpeed>
+void attack(I& imperialShip, RebelStarship<R, true, minSpeed, maxSpeed>& rebelShip) {
+    bool isImperialShipNotDestroyed = imperialShip.getShield() > static_cast<typename I::valueType>(0);
     if (isImperialShipNotDestroyed) {
-        bool isRebelNotDestroyed = rebelShip.getShield() >= 0;
+        bool isRebelNotDestroyed = rebelShip.getShield() > static_cast<R>(0);
 
         rebelShip.takeDamage(imperialShip.getAttackPower());
 

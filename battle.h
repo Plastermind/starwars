@@ -1,7 +1,3 @@
-//
-// Created by piotr on 25.11.18.
-//
-
 #ifndef STARWARS_BATTLE_H
 #define STARWARS_BATTLE_H
 
@@ -126,9 +122,7 @@ private:
     }
 
     template<size_t i, typename ImperialShipT, typename ShipT>
-    void iterateRebels(ImperialShipT &imperialShip, const ShipT &ship) {
-        (void) ship; //suppress warning
-
+    void iterateRebels(ImperialShipT &imperialShip, const ShipT) {
         if constexpr (i + 1 < sizeof...(Args)) {
             iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
         }
@@ -149,13 +143,10 @@ private:
     }
 
     template<size_t i, typename ShipT>
-    void iterateEmpire(const ShipT &ship) {
-        (void) ship; //suppress warning
-
+    void iterateEmpire(const ShipT) {
         if constexpr (i + 1 < sizeof...(Args)) {
             iterateEmpire<i + 1>(std::get<i + 1>(ships));
         }
-
     }
 
     void initialFleetCount() {
@@ -200,7 +191,6 @@ private:
     static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
         constexpr T offset = static_cast<T>(sizeof...(squares));
         constexpr T nextSquare = static_cast<T>(offset * offset);
-        (void) nextSquare; //suppress warnings
         if constexpr (numOfSquares == 0) {
             constexpr size_t size = (sizeof...(squares));
             return std::array<T, size>{{squares...}};
@@ -215,6 +205,4 @@ private:
 
 };
 
-
 #endif //STARWARS_BATTLE_H
-//-D CMAKE_CXX_COMPILER=clang++
