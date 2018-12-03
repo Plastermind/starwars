@@ -31,22 +31,17 @@ public:
     }
 
     void tick(T timeStep) {
-        //splaszcyc
-        if (countImperialFleet() == 0 || countRebelFleet() == 0) {
-            if (countImperialFleet() == 0 && countRebelFleet() == 0) {
-                std::cout << "DRAW" << std::endl;
-            } else if (countImperialFleet() == 0) {
-                std::cout << "REBELLION WON" << std::endl;
-            } else {
-                std::cout << "IMPERIUM WON" << std::endl;
-            }
-        } else {
-            if (isAttackTime(actualTime)) {
-                fight();
-            }
-
-            actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
+        if (countImperialFleet() == 0 && countRebelFleet() == 0) {
+            std::cout << "DRAW" << std::endl;
+        } else if (countImperialFleet() == 0) {
+            std::cout << "REBELLION WON" << std::endl;
+        } else if (countRebelFleet() == 0) {
+            std::cout << "IMPERIUM WON" << std::endl;
+        } else if (isAttackTime(actualTime)) {
+            fight();
         }
+
+        actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
     }
 
     // todo delete
