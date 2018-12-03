@@ -283,7 +283,7 @@ private:
         return result;
     }*/
 
-    const std::array<T, howManySquares()> attackMoments = calcSquares<howManySquares()>();
+    static constexpr std::array<T, howManySquares()> attackMoments = calcSquares<howManySquares()>();
 
 
 };
