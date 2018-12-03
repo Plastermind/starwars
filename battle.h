@@ -31,6 +31,7 @@ public:
     }
 
     void tick(T timeStep) {
+        //splaszcyc
         if (countImperialFleet() == 0 || countRebelFleet() == 0) {
             if (countImperialFleet() == 0 && countRebelFleet() == 0) {
                 std::cout << "DRAW" << std::endl;
@@ -45,7 +46,6 @@ public:
             }
 
             actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
-            //overflowSafeIncreaseTime(timeStep);
         }
     }
 
@@ -87,40 +87,7 @@ private:
 
     std::tuple<Args...> ships;
 
-    /*static T getOverflow(T value, T increase) {
-        T b = static_cast<T>(0);
-        T e = increase;
-        T m = (e - b) / static_cast<T>(2) + b;
-        while (e - b > static_cast<T>(1)) {
-            bool overflow = value > static_cast<T>(value + m);
-            if (overflow) {
-                e = m - static_cast<T>(1);
-            } else {
-                b = m;
-            }
-            m = (e - b) / static_cast<T>(2) + b;
-        }
-
-        bool overflow = value > static_cast<T>(value + e);
-
-        if (overflow) {
-            return increase - b;
-        } else {
-            return increase - e;
-        }
-    }
-
-    void overflowSafeIncreaseTime(T timeStep) {
-        T newTime = actualTime + timeStep;
-        if (newTime < actualTime) {
-            T overflow = getOverflow(actualTime, timeStep);
-            newTime = (actualTime + (timeStep - overflow)) % (maxTime + static_cast<T>(1));
-            newTime += overflow;
-        }
-
-        actualTime = newTime % (maxTime + static_cast<T>(1));
-    }*/
-
+    //stl lower_bound
     bool isAttackTime(T t) const {
         size_t b = 0;
         size_t e = attackMoments.size();
@@ -155,8 +122,6 @@ private:
 
     template<size_t i, typename ImperialShipT, typename U, bool isAttacker, int minSpeed, int maxSpeed>
     void iterateRebels(ImperialShipT &imperialShip, RebelStarship<U, isAttacker, minSpeed, maxSpeed> &rebelShip) {
-        //std::cerr << i << "Rebel" << std::endl;
-
         if (!shipDestroyed(rebelShip)) {
             attack(imperialShip, rebelShip);
 
@@ -178,7 +143,6 @@ private:
 
     template<size_t i, typename ImperialShipT, typename ShipT>
     void iterateRebels(ImperialShipT &imperialShip, const ShipT &ship) {
-        //std::cerr << i << "not Rebel" << std::endl;
         (void) ship; //suppress warning
 
         if constexpr (i + 1 < sizeof...(Args)) {
@@ -190,8 +154,6 @@ private:
 
     template<size_t i, typename U>
     void iterateEmpire(ImperialStarship<U> &imperialShip) {
-        //std::cerr << i << "Empire" << std::endl;
-
         if (!shipDestroyed(imperialShip)) {
             iterateRebels<0>(imperialShip, std::get<0>(ships));
 
@@ -204,7 +166,6 @@ private:
 
     template<size_t i, typename ShipT>
     void iterateEmpire(const ShipT &ship) {
-        //std::cerr << i << "not Empire" << std::endl;
         (void) ship; //suppress warning
 
         if constexpr (i + 1 < sizeof...(Args)) {
@@ -243,16 +204,13 @@ private:
 
     static constexpr size_t howManySquares() {
         size_t result = 0;
-        //bool overflow = false;
-        for (T i = static_cast<T>(0); /*!overflow &&*/ i * i <= t1; i += static_cast<T>(1)) { //todo change?
+        for (T i = static_cast<T>(0);i * i <= t1; i += static_cast<T>(1)) {
             ++result;
-            /*if ((i + 1) * (i + 1) < i * i) {
-                overflow = true;
-            }*/
         }
 
         return result;
     }
+
 
     template<size_t numOfSquares, T ...squares>
     static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
@@ -267,21 +225,6 @@ private:
         }
 
     }
-
-
-    /*
-    //todo czy to jest compile time
-    template<size_t numOfSquares>
-    static constexpr std::array<T, numOfSquares> calcSquares() {
-        std::array<T, numOfSquares> result;
-        for (size_t i = 0; i < numOfSquares; ++i) {
-            T offset = static_cast<T>(i);
-            T nextSquare = (offset) * (offset);
-            result[i] = nextSquare;
-        }
-
-        return result;
-    }*/
 
     static constexpr std::array<T, howManySquares()> attackMoments = calcSquares<howManySquares()>();
 
