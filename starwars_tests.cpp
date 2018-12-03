@@ -772,9 +772,9 @@ BOOST_AUTO_TEST_SUITE(Battle);
             ImperialDestroyer<float> id(104, 4);
             TIEFighter<float> tf(105, 5);
 
-            attack(ds, xw);
+            attack<DeathStar<float>, XWing<double>>(ds, xw);
             attack(ds, sc);
-            attack(ds, ex);
+            attack<DeathStar<float>, Explorer <double>>(ds, ex);
 
             attack(id, xw);
             attack(id, sc);

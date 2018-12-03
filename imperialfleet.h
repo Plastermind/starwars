@@ -48,21 +48,33 @@ template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
 
-template<typename I, typename T>
-void attack(I& imperialShip, T& rebelShip) {
-    rebelShip.takeDamage(imperialShip.getAttackPower());
+template<typename I, typename R>
+void attack(I &imperialShip, R &rebelShip) {
+    attack(imperialShip, rebelShip);
 }
 
-template<typename I, typename T>
-void attack(I& imperialShip, XWing<T>& xwing) {
-    xwing.takeDamage(imperialShip.getAttackPower());
-    imperialShip.takeDamage(xwing.getAttackPower());
+template<typename I, typename U, int minSpeed, int maxSpeed>
+void attack(I& imperialShip, RebelStarship<U, false, minSpeed, maxSpeed>& rebelShip) {
+    bool isImperialShipNotDestroyed = imperialShip.getShield() >= 0;
+    if (isImperialShipNotDestroyed) {
+        rebelShip.takeDamage(imperialShip.getAttackPower());
+    }
+
 }
 
-template<typename I, typename T>
-void attack(I& imperialShip, StarCruiser<T>& starCruiser) {
-    starCruiser.takeDamage(imperialShip.getAttackPower());
-    imperialShip.takeDamage(starCruiser.getAttackPower());
+template<typename I, typename U, int minSpeed, int maxSpeed>
+void attack(I& imperialShip, RebelStarship<U, true, minSpeed, maxSpeed>& rebelShip) {
+
+    bool isImperialShipNotDestroyed = imperialShip.getShield() >= 0;
+    if (isImperialShipNotDestroyed) {
+        bool isRebelNotDestroyed = rebelShip.getShield() >= 0;
+
+        rebelShip.takeDamage(imperialShip.getAttackPower());
+
+        if (isRebelNotDestroyed) {
+            imperialShip.takeDamage(rebelShip.getAttackPower());
+        }
+    }
 }
 
 
