@@ -56,8 +56,8 @@ using ImperialDestroyer = ImperialStarship<U>;
 template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
-template<typename I>
-bool isImperial(const ImperialStarship<I> &) {
+template<typename U>
+bool isImperial(const ImperialStarship<U> &) {
     return true;
 }
 

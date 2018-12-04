@@ -60,7 +60,7 @@ private:
     }
 
     void fight() {
-        if constexpr(sizeof...(S) != 0) {
+        if constexpr (sizeof...(S) != 0) {
             iterateEmpire<0>(std::get<0>(this->ships));
         }
 
@@ -121,7 +121,7 @@ private:
     }
 
     void initialFleetCount() {
-        if constexpr(sizeof...(S) != 0) {
+        if constexpr (sizeof...(S) != 0) {
             initialFleetCount < 0 > (std::get<0>(this->ships));
         }
     }
