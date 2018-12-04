@@ -3,15 +3,14 @@
 
 #include <cstddef>
 #include <iostream>
-#include <vector>
 #include <tuple>
 #include "rebelfleet.h"
 #include "imperialfleet.h"
 
-template<typename T, T t0, T t1, typename ...Args>
+template<typename T, T t0, T t1, typename ...S>
 class SpaceBattle {
 public:
-    SpaceBattle(Args ...args) : ships(args...) {
+    SpaceBattle(S ...s) : ships(s...) {
         actualTime = t0;
         maxTime = t1;
 
@@ -19,11 +18,11 @@ public:
     }
 
     size_t countImperialFleet() const {
-        return empireCount;
+        return this->empireCount;
     }
 
     size_t countRebelFleet() const {
-        return rebelCount;
+        return this->rebelCount;
     }
 
     void tick(T timeStep) {
@@ -40,33 +39,6 @@ public:
         actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
     }
 
-    // todo delete
-    void debug_print() {
-        std::cout << actualTime << " " << maxTime << std::endl;
-    }
-
-    // todo delete
-    void debug_print_attack_moments() {
-        for (auto m : attackMoments) {
-            std::cerr << m << " ";
-        }
-        std::cerr << std::endl;
-    }
-
-    // todo delete
-    T debug_get_current_time() {
-        return actualTime;
-    }
-
-    // todo delete
-    std::vector<T> debug_get_attack_moments() {
-        std::vector<T> res;
-        for (auto i : attackMoments) {
-            res.emplace_back(i);
-        }
-        return res;
-    }
-
 private:
     static_assert(t0 <= t1);
     static_assert(static_cast<T>(0) <= t0);
@@ -76,7 +48,7 @@ private:
     size_t empireCount = 0;
     size_t rebelCount = 0;
 
-    std::tuple<Args...> ships;
+    std::tuple<S...> ships;
 
     bool isAttackTime(T t) const {
         auto attackMoment = std::lower_bound(attackMoments.begin(), attackMoments.end(), t);
@@ -88,7 +60,7 @@ private:
     }
 
     void fight() {
-        if constexpr(sizeof...(Args) != 0) {
+        if constexpr(sizeof...(S) != 0) {
             iterateEmpire<0>(std::get<0>(ships));
         }
 
@@ -111,7 +83,7 @@ private:
         }
 
         if (!shipDestroyed(imperialShip)) {
-            if constexpr (i + 1 < sizeof...(Args)) {
+            if constexpr (i + 1 < sizeof...(S)) {
                 iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
             }
         } else {
@@ -122,8 +94,8 @@ private:
     }
 
     template<size_t i, typename ImperialShipT, typename ShipT>
-    void iterateRebels(ImperialShipT &imperialShip, const ShipT&) {
-        if constexpr (i + 1 < sizeof...(Args)) {
+    void iterateRebels(ImperialShipT &imperialShip, const ShipT &) {
+        if constexpr (i + 1 < sizeof...(S)) {
             iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
         }
 
@@ -135,21 +107,21 @@ private:
         if (!shipDestroyed(imperialShip)) {
             iterateRebels<0>(imperialShip, std::get<0>(ships));
         }
-        if constexpr (i + 1 < sizeof...(Args)) {
+        if constexpr (i + 1 < sizeof...(S)) {
             iterateEmpire<i + 1>(std::get<i + 1>(ships));
         }
 
     }
 
     template<size_t i, typename ShipT>
-    void iterateEmpire(const ShipT&) {
-        if constexpr (i + 1 < sizeof...(Args)) {
+    void iterateEmpire(const ShipT &) {
+        if constexpr (i + 1 < sizeof...(S)) {
             iterateEmpire<i + 1>(std::get<i + 1>(ships));
         }
     }
 
     void initialFleetCount() {
-        if constexpr(sizeof...(Args) != 0) {
+        if constexpr(sizeof...(S) != 0) {
             initialFleetCount < 0 > (std::get<0>(ships));
         }
     }
@@ -160,7 +132,7 @@ private:
             ++empireCount;
         }
 
-        if constexpr (i + 1 < sizeof...(Args)) {
+        if constexpr (i + 1 < sizeof...(S)) {
             initialFleetCount<i + 1>(std::get<i + 1>(ships));
         }
     }
@@ -171,34 +143,19 @@ private:
             ++rebelCount;
         }
 
-        if constexpr (i + 1 < sizeof...(Args)) {
+        if constexpr (i + 1 < sizeof...(S)) {
             initialFleetCount<i + 1>(std::get<i + 1>(ships));
         }
     }
 
     static constexpr size_t howManySquares() {
         size_t result = 0;
-        for (T i = static_cast<T>(0);i * i <= t1; i += static_cast<T>(1)) {
+        for (T i = static_cast<T>(0); i * i <= t1; i += static_cast<T>(1)) {
             ++result;
         }
 
         return result;
     }
-
-
-    /*
-    template<size_t numOfSquares, T ...squares>
-    static constexpr std::array<T, numOfSquares + (sizeof...(squares))> calcSquares() {
-        constexpr T offset = static_cast<T>(sizeof...(squares));
-        constexpr T nextSquare = static_cast<T>(offset * offset);
-        if constexpr (numOfSquares == 0) {
-            constexpr size_t size = (sizeof...(squares));
-            return std::array<T, size>{{squares...}};
-        } else {
-            return calcSquares<numOfSquares - 1, squares..., nextSquare>();
-        }
-
-    }*/
 
     template<size_t numOfSquares>
     static constexpr std::array<T, numOfSquares> calcSquares() {

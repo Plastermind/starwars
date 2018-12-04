@@ -1,9 +1,10 @@
 #ifndef STARWARS_IMPERIALFLEET_H
 #define STARWARS_IMPERIALFLEET_H
 
+#include <cassert>
 #include "rebelfleet.h"
 
-template <typename U>
+template<typename U>
 class ImperialStarship {
 public:
     ImperialStarship(U shield, U attackPower) : shield(shield), attackPower(attackPower) {
@@ -57,38 +58,38 @@ template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
 template<typename I>
-bool isImperial(ImperialStarship<I>) {
+bool isImperial(const ImperialStarship<I> &) {
     return true;
 }
 
-template<typename T>
-bool isImperial(T) {
+template<typename ShipT>
+bool isImperial(const ShipT &) {
     return false;
 }
 
 template<typename R, int minSpeed, int maxSpeed, bool isAttacker>
-bool isRebel(RebelStarship<R, isAttacker, minSpeed, maxSpeed>) {
+bool isRebel(const RebelStarship<R, isAttacker, minSpeed, maxSpeed> &) {
     return true;
 }
 
-template<typename T>
-bool isRebel(T) {
+template<typename ShipT>
+bool isRebel(const ShipT &) {
     return false;
 }
 
 template<typename I, typename R>
-void checkShipsCorrectness(I imperialShip, R rebelShip) {
+void checkShipsCorrectness(const I &imperialShip, const R &rebelShip) {
     assert(isImperial(imperialShip) && isRebel(rebelShip));
 }
 
 template<typename I, typename R>
-void attack(I& imperialShip, R& rebelShip) {
+void attack(I &imperialShip, R &rebelShip) {
     checkShipsCorrectness(imperialShip, rebelShip);
     attack(imperialShip, rebelShip);
 }
 
-template<typename I, typename R, int minSpeed, int maxSpeed>
-void attack(I& imperialShip, RebelStarship<R, false, minSpeed, maxSpeed>& rebelShip) {
+template<typename I, typename U, int minSpeed, int maxSpeed>
+void attack(I &imperialShip, RebelStarship<U, false, minSpeed, maxSpeed> &rebelShip) {
     bool isImperialShipNotDestroyed = imperialShip.getShield() > static_cast<typename I::valueType>(0);
     if (isImperialShipNotDestroyed) {
         rebelShip.takeDamage(imperialShip.getAttackPower());
@@ -96,13 +97,13 @@ void attack(I& imperialShip, RebelStarship<R, false, minSpeed, maxSpeed>& rebelS
 
 }
 
-template<typename I, typename R, int minSpeed, int maxSpeed>
-void attack(I& imperialShip, RebelStarship<R, true, minSpeed, maxSpeed>& rebelShip) {
+template<typename I, typename U, int minSpeed, int maxSpeed>
+void attack(I &imperialShip, RebelStarship<U, true, minSpeed, maxSpeed> &rebelShip) {
     bool isImperialShipNotDestroyed = imperialShip.getShield() > static_cast<typename I::valueType>(0);
-    bool isRebelNotDestroyed = rebelShip.getShield() > static_cast<R>(0);
+    bool isRebelShipNotDestroyed = rebelShip.getShield() > static_cast<U>(0);
 
 
-    if (isImperialShipNotDestroyed && isRebelNotDestroyed) {
+    if (isImperialShipNotDestroyed && isRebelShipNotDestroyed) {
         rebelShip.takeDamage(imperialShip.getAttackPower());
         imperialShip.takeDamage(rebelShip.getAttackPower());
     }

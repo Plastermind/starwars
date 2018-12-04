@@ -15,7 +15,7 @@ public:
 
     template<typename T = U>
     RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed),
-                                                                                    attackPower(static_cast<U>(0)) {
+                                                                      attackPower(static_cast<U>(0)) {
         checkParameters();
     }
 
