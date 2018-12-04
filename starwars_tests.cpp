@@ -11,6 +11,8 @@
 #include "imperialfleet.h"
 #include "battle.h"
 #include <cassert>
+#include <iostream>
+
 
 struct cout_redirect {
     cout_redirect( std::streambuf * new_buffer )
@@ -813,6 +815,53 @@ BOOST_AUTO_TEST_SUITE(Battle);
             BOOST_CHECK_EQUAL(exp.getShield(), 0);
         }
 
+
+    }
+
+    BOOST_AUTO_TEST_CASE(doubleImperfection) {
+        {
+            XWing<double> xw(1.1, XWingInfo::minSpeed, 1);
+            DeathStar<double> ds(11, 0.1);
+
+            attack(ds, xw);
+            BOOST_CHECK_EQUAL(ds.getShield(), 10);
+            BOOST_CHECK_EQUAL(xw.getShield(), 1);
+
+            boost::test_tools::output_test_stream output;
+            cout_redirect redir(output.rdbuf());
+
+            SpaceBattle<int, 0, 6, XWing<double>, DeathStar<double> > sp(xw, ds);
+            BOOST_CHECK_EQUAL(sp.countImperialFleet(), 1);
+
+            BOOST_CHECK_EQUAL(sp.countRebelFleet(), 1);
+            for (int a = 1; a <= 10; a++) {
+                sp.tick(0);
+//                std::cerr << std::get<0>(sp.ships).getShield() << " " << std::get<1>(sp.ships).getShield();
+//
+//                std::cerr << std::endl;
+            }
+//            std::cerr << sp.countImperialFleet() << std::endl;
+//            std::cerr << sp.countRebelFleet() << std::endl;
+//            BOOST_CHECK_EQUAL(sp.countImperialFleet(), 0);
+//            BOOST_CHECK_EQUAL(sp.countRebelFleet(), 0);
+//            BOOST_CHECK((output.is_equal("DRAW\n")));
+        }
+
+
+        {
+
+            XWing<float> xwing(100.0f, 300000.0f, 50.0f);
+            Explorer<int> explorer(150, 400000);
+            StarCruiser<unsigned> cruiser(1234, 100000, 11);
+            DeathStar<long> deathStar(10000, 75);
+
+//            should throw assertion error
+//            attack<XWing<float>, DeathStar<long>> (xwing, deathStar);
+//            attack<DeathStar<long>, DeathStar<long>> (deathStar, deathStar);
+
+//            Zagadka - czemu to sie nie kompiluje???
+//            attack<Explorer<int>, StarCruiser<unsigned>> (explorer, cruiser);
+        }
 
     }
 

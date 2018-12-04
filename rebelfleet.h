@@ -1,32 +1,22 @@
-//
-// Created by skonrad on 24/11/18.
-//
-
 #ifndef STARWARS_REBELFLEET_H
 #define STARWARS_REBELFLEET_H
 
 #include <cassert>
 #include <type_traits>
 
-
-//sfinae
-//enable_t
-//do space batle krotka bo nie moge typow w runtime rozpoznac
-//todo co jak tarcze ujemne
-//todo co jak attack power ujemne
-
 template<typename U, bool isAttacker, int minSpeed, int maxSpeed>
 class RebelStarship {
 public:
-    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    template<typename T = U>
     RebelStarship(std::enable_if_t<isAttacker, T> shield, U speed, U attackPower) : shield(shield), speed(speed),
                                                                                     attackPower(attackPower) {
-        checkSpeed();
+        checkParameters();
     }
 
-    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
-    RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed) {
-        checkSpeed();
+    template<typename T = U>
+    RebelStarship(std::enable_if_t<!isAttacker, T> shield, U speed) : shield(shield), speed(speed),
+                                                                      attackPower(static_cast<U>(0)) {
+        checkParameters();
     }
 
     U getShield() const {
@@ -37,7 +27,6 @@ public:
         return this->speed;
     }
 
-    //todo co jak damage ujemne
     void takeDamage(U damage) {
         if (damage > this->getShield()) {
             this->shield = static_cast<U>(0);
@@ -46,7 +35,7 @@ public:
         }
     }
 
-    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    template<typename T = U>
     std::enable_if_t<isAttacker, T> getAttackPower() const {
         return this->attackPower;
     }
@@ -58,11 +47,24 @@ private:
     U speed;
     U attackPower;
 
+    void checkParameters() const {
+        checkSpeed();
+        checkShield();
+        checkAttackPower();
+    }
+
     void checkSpeed() const {
         assert(minSpeed <= this->speed && this->speed <= maxSpeed);
     }
-};
 
+    void checkShield() const {
+        assert(this->shield >= static_cast<U>(0));
+    }
+
+    void checkAttackPower() const {
+        assert(this->attackPower >= static_cast<U>(0));
+    }
+};
 
 template<typename U>
 using StarCruiser = RebelStarship<U, true, 99999, 299795>;
