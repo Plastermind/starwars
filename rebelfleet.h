@@ -35,7 +35,7 @@ public:
         }
     }
 
-    template<typename T = U, bool b = isAttacker, int mins = minSpeed, int maxs = maxSpeed>
+    template<typename T = U>
     std::enable_if_t<isAttacker, T> getAttackPower() const {
         return this->attackPower;
     }

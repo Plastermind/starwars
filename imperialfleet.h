@@ -99,14 +99,12 @@ void attack(I& imperialShip, RebelStarship<R, false, minSpeed, maxSpeed>& rebelS
 template<typename I, typename R, int minSpeed, int maxSpeed>
 void attack(I& imperialShip, RebelStarship<R, true, minSpeed, maxSpeed>& rebelShip) {
     bool isImperialShipNotDestroyed = imperialShip.getShield() > static_cast<typename I::valueType>(0);
-    if (isImperialShipNotDestroyed) {
-        bool isRebelNotDestroyed = rebelShip.getShield() > static_cast<R>(0);
+    bool isRebelNotDestroyed = rebelShip.getShield() > static_cast<R>(0);
 
+
+    if (isImperialShipNotDestroyed && isRebelNotDestroyed) {
         rebelShip.takeDamage(imperialShip.getAttackPower());
-
-        if (isRebelNotDestroyed) {
-            imperialShip.takeDamage(rebelShip.getAttackPower());
-        }
+        imperialShip.takeDamage(rebelShip.getAttackPower());
     }
 }
 
