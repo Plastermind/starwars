@@ -53,7 +53,6 @@ using DeathStar = ImperialStarship<U>;
 template<typename U>
 using ImperialDestroyer = ImperialStarship<U>;
 
-
 template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
@@ -67,8 +66,8 @@ bool isImperial(const ShipT &) {
     return false;
 }
 
-template<typename R, int minSpeed, int maxSpeed, bool isAttacker>
-bool isRebel(const RebelStarship<R, isAttacker, minSpeed, maxSpeed> &) {
+template<typename U, int minSpeed, int maxSpeed, bool isAttacker>
+bool isRebel(const RebelStarship<U, isAttacker, minSpeed, maxSpeed> &) {
     return true;
 }
 
