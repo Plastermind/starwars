@@ -11,8 +11,8 @@ template<typename T, T t0, T t1, typename ...S>
 class SpaceBattle {
 public:
     SpaceBattle(S ...s) : ships(s...) {
-        actualTime = t0;
-        maxTime = t1;
+        this->actualTime = t0;
+        this->maxTime = t1;
 
         initialFleetCount();
     }
@@ -32,11 +32,11 @@ public:
             std::cout << "REBELLION WON" << std::endl;
         } else if (countRebelFleet() == 0) {
             std::cout << "IMPERIUM WON" << std::endl;
-        } else if (isAttackTime(actualTime)) {
+        } else if (isAttackTime(this->actualTime)) {
             fight();
         }
 
-        actualTime = (actualTime + timeStep) % (maxTime + static_cast<T>(1));
+        this->actualTime = (this->actualTime + timeStep) % (this->maxTime + static_cast<T>(1));
     }
 
 private:
@@ -61,7 +61,7 @@ private:
 
     void fight() {
         if constexpr(sizeof...(S) != 0) {
-            iterateEmpire<0>(std::get<0>(ships));
+            iterateEmpire<0>(std::get<0>(this->ships));
         }
 
     }
@@ -78,16 +78,16 @@ private:
             attack(imperialShip, rebelShip);
 
             if (shipDestroyed(rebelShip)) {
-                --rebelCount;
+                --(this->rebelCount);
             }
         }
 
         if (!shipDestroyed(imperialShip)) {
             if constexpr (i + 1 < sizeof...(S)) {
-                iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
+                iterateRebels<i + 1>(imperialShip, std::get<i + 1>(this->ships));
             }
         } else {
-            --empireCount;
+            --(this->empireCount);
         }
 
 
@@ -96,7 +96,7 @@ private:
     template<size_t i, typename ImperialShipT, typename ShipT>
     void iterateRebels(ImperialShipT &imperialShip, const ShipT &) {
         if constexpr (i + 1 < sizeof...(S)) {
-            iterateRebels<i + 1>(imperialShip, std::get<i + 1>(ships));
+            iterateRebels<i + 1>(imperialShip, std::get<i + 1>(this->ships));
         }
 
     }
@@ -105,10 +105,10 @@ private:
     template<size_t i, typename U>
     void iterateEmpire(ImperialStarship<U> &imperialShip) {
         if (!shipDestroyed(imperialShip)) {
-            iterateRebels<0>(imperialShip, std::get<0>(ships));
+            iterateRebels<0>(imperialShip, std::get<0>(this->ships));
         }
         if constexpr (i + 1 < sizeof...(S)) {
-            iterateEmpire<i + 1>(std::get<i + 1>(ships));
+            iterateEmpire<i + 1>(std::get<i + 1>(this->ships));
         }
 
     }
@@ -116,35 +116,35 @@ private:
     template<size_t i, typename ShipT>
     void iterateEmpire(const ShipT &) {
         if constexpr (i + 1 < sizeof...(S)) {
-            iterateEmpire<i + 1>(std::get<i + 1>(ships));
+            iterateEmpire<i + 1>(std::get<i + 1>(this->ships));
         }
     }
 
     void initialFleetCount() {
         if constexpr(sizeof...(S) != 0) {
-            initialFleetCount < 0 > (std::get<0>(ships));
+            initialFleetCount < 0 > (std::get<0>(this->ships));
         }
     }
 
     template<size_t i, typename U>
     void initialFleetCount(const ImperialStarship<U> &imperialShip) {
         if (!shipDestroyed(imperialShip)) {
-            ++empireCount;
+            ++(this->empireCount);
         }
 
         if constexpr (i + 1 < sizeof...(S)) {
-            initialFleetCount<i + 1>(std::get<i + 1>(ships));
+            initialFleetCount<i + 1>(std::get<i + 1>(this->ships));
         }
     }
 
     template<size_t i, typename U, bool isAttacker, int minSpeed, int maxSpeed>
     void initialFleetCount(const RebelStarship<U, isAttacker, minSpeed, maxSpeed> &rebelShip) {
         if (!shipDestroyed(rebelShip)) {
-            ++rebelCount;
+            ++(this->rebelCount);
         }
 
         if constexpr (i + 1 < sizeof...(S)) {
-            initialFleetCount<i + 1>(std::get<i + 1>(ships));
+            initialFleetCount<i + 1>(std::get<i + 1>(this->ships));
         }
     }
 
