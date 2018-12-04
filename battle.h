@@ -67,7 +67,7 @@ public:
         return res;
     }
 
-public:
+private:
     static_assert(t0 <= t1);
     static_assert(static_cast<T>(0) <= t0);
 
